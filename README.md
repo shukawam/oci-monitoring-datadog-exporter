@@ -53,7 +53,6 @@ python3 func.py
   - DATADOG_API_KEY
 - Optional
   - FORWARD_TO_DATADOG
-  - METRICS_TAG_KEYS
   - LOGGING_LEVEL
   - ENABLE_TRACING
 
@@ -68,10 +67,6 @@ Obtain your Datadog API KEY and set value.
 ### FORWARD_TO_DATADOG
 
 Whether to forward metrics to Datadog. Mainly used for debug purposes.
-
-### METRICS_TAG_KEYS
-
-Tag information to be linked to Datadog. By default, almost all dimension is converted to Tag and linked.
 
 ### LOGGING_LEVEL
 
