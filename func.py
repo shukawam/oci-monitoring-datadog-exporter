@@ -26,8 +26,6 @@ https://docs.datadoghq.com/api/latest/metrics/#submit-metrics
 api_endpoint = os.getenv('DATADOG_METRICS_API_ENDPOINT', 'not-configured')
 api_key = os.getenv('DATADOG_API_KEY', 'not-configured')
 is_forwarding = eval(os.getenv('FORWARD_TO_DATADOG', "True"))
-all_tag_keys = 'accountSubscription, action, actionType, adapterIdentifier, agentHostName, aggregateDataMeasure, apdexLevel, apmrumPageUpdateType, apmrumType, apmVersion, applicationId, applicationName, appserver, appserverDisplayPort, appserverDomainName, appserverId, appserverName, appserverPorts, appserverServerName, appserverType, appserverVersion, associatedOciResourceId, associatedResourceId, attachmentId, availabilityDomain, backendHttpStatusCategory, backendHttpStatusCode, backendName, backendSetName, backendType, browserName, buildPipelineId, cause, clientName, clusterId, collectionName, compartmentId, component, computeMaintenanceAction, connectorId, connectorName, countryCode, createdBy, customMarker, dataProcessingFrequencyInHrs, dataType, dbSystemId, dBUniqueName, deploymentId, deploymentName, deploymentType, deployPipelineId, deployStageId, deployStageName, deviceType, diskgroupName, displayName, distributionPathName, dropType, ebsAkRegionAppId, ebsAkRegionCode, ebsClassName, ebsFunctionId, ebsOaFunc, ebsOahp, ebsOapb, ebsOasf, ebsRegionAppId, ebsRegionClass, ebsRegionCode, ebsRespAppId, ebsRespId, endpointType, entitlementName, errorCategory, errorCode, errorMessage, errorSeverity, errorType, eventType, exceededForecastWindow, executorId, extractName, faultClass, faultDomain, filesystemName, fleetName, flowCode, flowVersion, forecastModel, genre, ggregateDataMeasure, healthItem, heatWaveNode, host, hostAddress, hostAddresses, hostname, hostnameCanonical, hostnames, httpMethodType, httpStatusCategory, httpStatusCode, imageId, inboundProcessingEndpointInformation, inboundProcessingResponseStatus, instanceId, instanceName, instanceNumber, instancePoolId, integrationFlowIdentifier, ioType, isApmAgentMonitored, isDegraded, isHarAvailable, isIncreasingCpu, isIncreasingIo, isIncreasingWait, isInefficient, isLogAvailable, isNetworkDataAvailable, isPlanChanged, isRetryExecution, isScreenshotAvailable, isVariant, isVisible, javaMajorVersion, javaVendor, javaVersion, jobId, jobName, kubernetesNamespace, kubernetesNodeName, kubernetesPodAnnotations, kubernetesPodLabels, kubernetesPodName, lbComponent, lbHostId, lifecycleState, listenerName, logGroupId, logGroupName, logObjectId, logObjectName, logSourceService, maintenanceDueTime, maintenanceWindowActive, managedDatabaseGroupId, managedDatabaseId, memoryPool, memoryType, meshComponent, meshId, metadataVersion, meterType, module, monitorId, monitorName, monitorType, mountTargetId, mtResourceName, nodeCondition, nodepoolId, nodeState, obcResourceName, ociAvailabilityDomain, ociCompartmentId, ociComputeShape, ociDisplayName, ociFaultDomain, ociInstanceId, ociRegion, okeClusterId, okeClusterLabel, okeCompartmentName, okeKubernetesVersion, okeNodePoolId, okeNodepoolLabel, okeTenancyId, operation, oraPackagedApp, osAvailableProcessors, osFamily, osName, osUserName, osVersion, outboundInvocationEndpointInformation, outboundInvocationResponseStatus, parentResourceId, parseType, partitionId, path, performanceFactorName, performanceFactorType, primaryDomain, probe, processId, processName, projectId, projectName, protocol, publicIp, pullType, pushType, queueName, receiverPathName, recommendedAction, region, replicatName, repositoryId, repositoryName, repositoryType, requestType, resourceDisplayName, resourceDomain, resourceId, resourceMetric, resourceName, resourceType, responseCacheResult, responseCode, responseCodeGroup, responseGroup, responseType, result, resultCode, resultMessage, riskLevel, route, schemaName, serviceInstanceId, serviceName, sessionType, shape, siebelResourceName, siebelResourceOperation, siebelResourceType, size, sourceEntityIdentifier, sourceIdentifier, sourceMetricName, sourceName, srcType, stageId, stageType, status, statusCode, statusFamily, subscriberId, subscriberName, subscriptionId, tableName, tablespaceName, tablespaceType, target, targetName, taskId, taskName, taskStatus, taskType, telemetryAutoVersion, telemetrySdkLanguage, telemetrySdkName, telemetrySdkVersion, telemetrySourceEntityIdentifier, telemetrySourceIdentifier, telemetrySourceType, throughput, tier, timestamp, topicDisplayName, transactionStatus, type, usagePlanId, usagePlanName, userAgent, userTenancyId, vantagePoint, vantagePointDisplayName, version, vmName, vmVendor, vmVersion, waitClass, webApplicationName, workingDirectory, workspaceId'
-metric_tag_keys = os.getenv('METRICS_TAG_KEYS', all_tag_keys)
 metric_tag_set = set()
 
 # Set all registered loggers to the configured log_level
@@ -194,7 +192,7 @@ def get_metric_tags(log_record: dict):
 
     result = []
 
-    for tag in get_metric_tag_set():
+    for tag in get_metric_tag_set(log_record):
         value = get_dictionary_value(dictionary=log_record, target_key=tag)
         logging.getLogger().debug("value: {}".format(value))
         if value is None:
@@ -210,17 +208,19 @@ def get_metric_tags(log_record: dict):
     return result
 
 
-def get_metric_tag_set():
+def get_metric_tag_set(log_record: dict):
     """
-    :return: the set metric payload keys that we would like to have converted to tags.
+    :return: the set metric payload keys from input metrics(oci).
     """
 
-    global metric_tag_set
+    target_keys = ["dimensions", "metadata"]
+    metric_tag_set = ["namespace", "compartmentId", "name", "resourceGroup"]
 
-    if len(metric_tag_set) == 0 and metric_tag_keys:
-        split_and_stripped_tags = [x.strip() for x in metric_tag_keys.split(',')]
-        metric_tag_set.update(split_and_stripped_tags)
-        logging.getLogger().debug("tag key set / {} ".format (metric_tag_set))
+    for key in target_keys:
+        if key in log_record:
+            metric_tag_set.extend(list(log_record.get(key).keys()))
+
+    logging.getLogger().debug("tag ket set / {}".format(metric_tag_set))
 
     return metric_tag_set
 
