@@ -214,7 +214,7 @@ def get_metric_tag_set(log_record: dict):
     """
 
     target_keys = ["dimensions", "metadata"]
-    metric_tag_set = []
+    metric_tag_set = ["namespace", "compartmentId", "name", "resourceGroup"]
 
     for key in target_keys:
         if key in log_record:
