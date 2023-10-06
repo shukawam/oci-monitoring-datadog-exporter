@@ -1,0 +1,165 @@
+{
+  "compartmentId": "<your-compartment-id>",
+  "description": "Metrics Data Forwarder",
+  "displayName": "monitoring-to-datadog",
+  "maxWaitSeconds": 0,
+  "source": {
+    "kind": "monitoring",
+    "monitoringSources": [
+      {
+        "compartmentId": "<your-compartment-id>",
+        "namespaceDetails": {
+          "kind": "selected",
+          "namespaces": [
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_analytics"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_apigateway"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_autonomous_database"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_blockstore"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_compute"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_compute_infrastructure_health"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_compute_instance_health"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_computeagent"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_datalabeling"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_datascience"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_devops_build"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_devops_deployment"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_faas"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_internet_gateway"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_logging"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_mysql_database"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_nosql"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_objectstorage"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_opensearch"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_redis"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_secrets"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_streaming"
+            },
+            {
+              "metrics": {
+                "kind": "all"
+              },
+              "namespace": "oci_vcn"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "target": {
+    "functionId": "<function-id>",
+    "kind": "functions"
+  },
+  "waitForState": [
+    "SUCCEEDED"
+  ],
+  "waitIntervalSeconds": 0
+}
